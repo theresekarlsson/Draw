@@ -12,6 +12,6 @@ public class ColorOutlineListener implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		sv.chooseColorOutline();
+		sv.relayColorOutline();
 	}
 }

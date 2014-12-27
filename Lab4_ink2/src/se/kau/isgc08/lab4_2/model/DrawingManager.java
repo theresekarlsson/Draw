@@ -1,12 +1,13 @@
 package se.kau.isgc08.lab4_2.model;
 import java.awt.Color;
+
 import se.kau.isgc08.lab4_2.view.DrawingUtil;
 
 public class DrawingManager {
   
 	private DrawingContainer drawContainer;
 	private FileHandler fh;
-	private int lineThickness = 1;
+	private int lineThickness = 0;
 	private String shapeDefault = "CIRCLE";
 	private String stateDefault = "NEW";
 	private String currentState = stateDefault;
@@ -17,14 +18,13 @@ public class DrawingManager {
 	private int startPosX, startPosY, endPosX, endPosY, width, height;
 	
 	public DrawingManager(DrawingUtil drawingUtil) {
-
 		drawUtil = drawingUtil;
 		fh = new FileHandler();
-		drawContainer = new DrawingContainer();
-		drawContainer = fh.openFromFile();
+		drawContainer = new DrawingContainer();	
 	}
 	
 	public DrawingContainer getContainer() {
+		drawContainer = fh.openFromFile(drawContainer);
 		return drawContainer;
 	}
 	
@@ -51,7 +51,6 @@ public class DrawingManager {
 	
 	public void setStateOption(String selectedState) {
 		currentState = selectedState;
-		System.out.println("State: " + currentState);
 	}
 
 	public String getStateOption() {
@@ -60,10 +59,8 @@ public class DrawingManager {
 
 	public void setShapeOption(String selectedShape) {
 		currentShape = selectedShape;
-		System.out.println("Sätt shape: " + currentShape);
 	}
 	public String getShapeOption() {
-		System.out.println("Returnera shape: " + currentShape);
 		return currentShape;
 	}
 	
@@ -103,5 +100,8 @@ public class DrawingManager {
 	public void setColorOutline(Color chosenColorOutline) {
 		currentColorOutline = chosenColorOutline;
 		System.out.println("Linjefärg: " + currentColorOutline.toString());
+	}
+	public void checkTheCoordinates(int xCheck, int yCheck) {
+		drawContainer.checkCoordinates(xCheck, yCheck);
 	}
 }

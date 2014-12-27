@@ -20,7 +20,7 @@ public class SlideListener implements ChangeListener {
 		if (!source.getValueIsAdjusting()) {
 	        int value = (int)source.getValue();
 	        
-	        sv.relayLineThickness(value);
+	        sv.relaySlider(value);
 	    }
 	}
 

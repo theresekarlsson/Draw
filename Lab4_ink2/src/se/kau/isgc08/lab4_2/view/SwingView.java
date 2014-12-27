@@ -24,7 +24,7 @@ public class SwingView {
 	
 	static final int MIN = 0;
 	static final int MAX = 10;
-	static final int INIT = 1;
+	static final int INIT = 0;
 	private Controller con;
 	private ExitListener el;
 	private DrawingUtil drawUtil;
@@ -34,7 +34,7 @@ public class SwingView {
 	private JFrame frame;
 	private DrawingPanel drawPanel;
 	private JRadioButton rBtnLine, rBtnCircle, rBtnSquare;
-	private JButton btnColorFill, btnColorOutline;
+	private JButton btnColorFill, btnColorOutline, btnDelete;
 	private JSlider slider;
 	
 	public SwingView (Controller c) {
@@ -47,6 +47,80 @@ public class SwingView {
 		System.out.println("repaintGUI");
 		drawPanel.repaint();
 		drawPanel.revalidate();
+	}
+	
+	public DrawingUtil getDrawUtil() {
+		return drawUtil;
+	}
+	// Skickar vidare vald fyllnadsfärg.
+	public void relayColorFill() {
+		Color chosenColorFill = JColorChooser.showDialog(colorChooser, "Välj fyllnadsfärg", null); 
+		lblColorFill.setBackground(chosenColorFill);
+		con.handleColorFill(chosenColorFill);
+	}
+	// Skickar vidare vald linjefärg.
+	public void relayColorOutline() {
+		Color chosenColorOutline = JColorChooser.showDialog(colorChooser, "Välj kantfärg", null); 
+		lblColorOutline.setBackground(chosenColorOutline);
+		con.handleColorOutline(chosenColorOutline);
+	}
+	// Skickar vidare vald state.
+	public void relayStateOption(String selectedState) {
+		con.handleStateOption(selectedState);
+	}
+	// Skickar vidare vald form.
+	public void relayShapeOption(String selectedShape) {
+		con.handleShapeOption(selectedShape);
+	}
+	// Skickar vidare vald linjetjocklek.
+	public void relaySlider(int value) {
+		con.handleSlider(value);
+	}
+	
+	public void relayExit() {
+		con.handleExit();
+	}
+
+	public void relayMousePressed(int xStart, int yStart) {
+		con.handleMousePressed(xStart, yStart);
+	}
+
+	public void relayMouseReleased(int xEnd, int yEnd) {
+		con.handleMouseReleased(xEnd, yEnd);
+	}
+	
+	public void relayDelete() {
+		
+	}
+
+	public void disableEditingOptions() {
+		rBtnCircle.setEnabled(false);
+		rBtnSquare.setEnabled(false);
+		rBtnLine.setEnabled(false);
+		btnColorFill.setEnabled(false);
+		btnColorOutline.setEnabled(false);
+		lblThickness.setEnabled(false);
+		slider.setEnabled(false);
+		btnDelete.setEnabled(true);
+	}
+
+	public void enableEditingOptions() {
+		rBtnCircle.setEnabled(true);
+		rBtnSquare.setEnabled(true);
+		rBtnLine.setEnabled(true);
+		btnColorFill.setEnabled(true);
+		btnColorOutline.setEnabled(true);
+		lblThickness.setEnabled(true);
+		slider.setEnabled(true);
+		btnDelete.setEnabled(false);
+	}
+
+	public void enableColorOutline() {
+		btnColorOutline.setEnabled(true);
+	}
+
+	public void disableColorOutline() {
+		btnColorOutline.setEnabled(false);
 	}
 	
 	/* Skapar fönster */
@@ -130,13 +204,20 @@ public class SwingView {
 		editPanel.add(lblThickness);
 		editPanel.add(slider);
 
+		// Delete button
+		btnDelete = new JButton("Ta bort");
+		btnDelete.addActionListener(new DeleteListener(this));
+		
 		// Close button
 		JButton btnClose = new JButton("Avsluta");
 		btnClose.addActionListener(el);
 		
 		editPanel.add(Box.createVerticalStrut(25));
+		editPanel.add(btnDelete);
+		editPanel.add(Box.createVerticalStrut(10));
 		editPanel.add(btnClose);
 		editPanel.add(Box.createVerticalStrut(10));
+		
 		
 		// Drawing area
 		drawPanel = new DrawingPanel(dc);
@@ -158,73 +239,5 @@ public class SwingView {
 		// Add components to window
 		frame.add(editPanel, BorderLayout.WEST);
 		frame.add(drawPanel);
-	}
-	
-	public DrawingUtil getDrawUtil() {
-		return drawUtil;
-	}
-	// Skickar vidare vald fyllnadsfärg.
-	public void chooseColorFill() {
-		Color chosenColorFill = JColorChooser.showDialog(colorChooser, "Välj fyllnadsfärg", null); 
-		lblColorFill.setBackground(chosenColorFill);
-		con.handleColorFill(chosenColorFill);
-	}
-	// Skickar vidare vald linjefärg.
-	public void chooseColorOutline() {
-		Color chosenColorOutline = JColorChooser.showDialog(colorChooser, "Välj kantfärg", null); 
-		lblColorOutline.setBackground(chosenColorOutline);
-		con.handleColorOutline(chosenColorOutline);
-	}
-	// Skickar vidare vald state.
-	public void relayStateOption(String selectedState) {
-		con.handleStateOption(selectedState);
-	}
-	// Skickar vidare vald form.
-	public void relayShapeOption(String selectedShape) {
-		con.handleShapeOption(selectedShape);
-	}
-	// Skickar vidare vald linjetjocklek.
-	public void relayLineThickness(int value) {
-		con.relaySlide(value);
-	}
-	
-	public void relayExit() {
-		con.handleExit();
-	}
-
-	public void relayMousePressed(int xStart, int yStart) {
-		con.handleMousePressed(xStart, yStart);
-	}
-
-	public void relayMouseReleased(int xEnd, int yEnd) {
-		con.handleMouseReleased(xEnd, yEnd);
-	}
-
-	public void disableEditingOptions() {
-		rBtnCircle.setEnabled(false);
-		rBtnSquare.setEnabled(false);
-		rBtnLine.setEnabled(false);
-		btnColorFill.setEnabled(false);
-		btnColorOutline.setEnabled(false);
-		lblThickness.setEnabled(false);
-		slider.setEnabled(false);
-	}
-
-	public void enableEditingOptions() {
-		rBtnCircle.setEnabled(true);
-		rBtnSquare.setEnabled(true);
-		rBtnLine.setEnabled(true);
-		btnColorFill.setEnabled(true);
-		btnColorOutline.setEnabled(true);
-		lblThickness.setEnabled(true);
-		slider.setEnabled(true);
-	}
-
-	public void enableColorOutline() {
-		btnColorOutline.setEnabled(true);
-	}
-
-	public void disableColorOutline() {
-		btnColorOutline.setEnabled(false);
 	}
 }

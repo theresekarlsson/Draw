@@ -2,6 +2,7 @@ package se.kau.isgc08.lab4_2.model;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -16,16 +17,20 @@ import se.kau.isgc08.lab4_2.view.DrawingUtilInterface;
  */
 public class DrawingContainer implements DrawingComposite, Cloneable {
 	
-	/** The v This attribute will keep the leaf for this container. */
-	private Vector<DrawingComposite> v;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
+	private Vector<DrawingComposite> v;
 	
 	
 	/**
 	 * Instantiates a new drawing container. It also instantiates the Vector used for the members the container holds.
 	 */
 	public DrawingContainer() {
-		v=new Vector<DrawingComposite>();
+		v = new Vector<DrawingComposite>();
 	}
 	
 	/**
@@ -37,9 +42,10 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 			
 	public void draw(Graphics g) {
 		DrawingComposite t;
-		Enumeration<DrawingComposite> e=v.elements();
+		Enumeration<DrawingComposite> e = v.elements();
+		
 		while(e.hasMoreElements()) {
-			t= e.nextElement();
+			t = e.nextElement();
 			t.draw(g);
 		}
 	}
@@ -151,4 +157,18 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public DrawingShape checkCoordinates(int xCheck, int yCheck) {
+		DrawingComposite t;
+		Collections.reverse(v);
+		Enumeration<DrawingComposite> e = v.elements();
+		DrawingShape ds = null;
+		
+		while (e.hasMoreElements()) {
+			t = e.nextElement();
+			ds = t.checkCoordinates(xCheck, yCheck);
+		}
+		return ds;
+	}
+	
 }
