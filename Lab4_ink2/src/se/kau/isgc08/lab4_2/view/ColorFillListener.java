@@ -12,6 +12,6 @@ public class ColorFillListener implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		sv.chooseColorFill();
+		sv.relayColorFill();
 	}
 }

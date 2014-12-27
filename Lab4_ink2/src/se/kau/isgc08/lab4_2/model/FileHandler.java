@@ -28,22 +28,22 @@ public class FileHandler {
 		}
 	}
 	
-	public DrawingContainer openFromFile() {
+	public DrawingContainer openFromFile(DrawingContainer drawCont) {
 		File file = new File("container.txt");
-		DrawingContainer drawContainer = null;
 		try {
 			FileInputStream fileInput = new FileInputStream(file);
 			BufferedInputStream bufferInStream = new BufferedInputStream(fileInput);
 			ObjectInputStream objectInStream = new ObjectInputStream(bufferInStream);
-			drawContainer = (DrawingContainer) objectInStream.readObject();
+			drawCont = (DrawingContainer) objectInStream.readObject();
 			objectInStream.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			// returns the empty container.
+			return drawCont;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return drawContainer;	
+		return drawCont;	
 	}
 }

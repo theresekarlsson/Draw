@@ -7,8 +7,8 @@ public class Controller {
 	
 	private SwingView sv;
 	private DrawingManager dm;
-	private final static String STATE_OPT_1 = "NEW", STATE_OPT_2 = "EDIT";
-	private final static String SHAPE_OPT_1 = "CIRCLE", SHAPE_OPT_2 = "SQUARE", SHAPE_OPT_3 = "LINE"; // TODO ändra variabel till stora bokstäver
+	private final static String STATE_OPT_NEW = "NEW", STATE_OPT_EDIT = "EDIT";
+	private final static String SHAPE_OPT_CIRCLE = "CIRCLE", SHAPE_OPT_SQUARE = "SQUARE", SHAPE_OPT_LINE = "LINE";	
 	private int width, height;
 	
 	public Controller() {
@@ -29,58 +29,80 @@ public class Controller {
 		System.exit(0);
 	}
 
-	public void relaySlide(int value) {
+	public void handleSlider(int value) {
 		dm.setLineThickness(value);
 	}
 
 	public void handleStateOption(String selState) {
-		String selectedState;
-		if (selState.equals("Måla ny")) {
+		String selectedState = null;
+		switch (selState) {
+		case "Måla ny":
 			sv.enableEditingOptions();
-			selectedState = STATE_OPT_1;
-		}
-		else {
+			selectedState = STATE_OPT_NEW;
+			break;
+		case "Förändra befintlig":
 			sv.disableEditingOptions();
-			selectedState = STATE_OPT_2;
+			selectedState = STATE_OPT_EDIT;
+			break;
+		default:
+			break;
 		}
 		dm.setStateOption(selectedState);
 	}
 
 	public void handleShapeOption(String selShape) {
-		String selectedShape;
-		if (selShape.equals("Cirkel")) {
-			selectedShape = SHAPE_OPT_1 ;
+		String selectedShape = null;
+		switch (selShape) {
+		case "Cirkel":
+			selectedShape = SHAPE_OPT_CIRCLE ;
 			sv.enableColorOutline();
-		}
-		else if (selShape.equals("Fyrkant")) {
-			selectedShape = SHAPE_OPT_2;
+			break;
+		case "Fyrkant":
+			selectedShape = SHAPE_OPT_SQUARE;
 			sv.enableColorOutline();
-		}
-		else {
-			selectedShape = SHAPE_OPT_3;
+			break;
+		case "Linje":
+			selectedShape = SHAPE_OPT_LINE;
 			sv.disableColorOutline();
+			break;
+		default:
+			break;
 		}
 		dm.setShapeOption(selectedShape);
 	}
 
 	public void handleMousePressed(int xStart, int yStart) {
-		
-		if (dm.getStateOption().equals(STATE_OPT_1))
-		{
+		switch (dm.getStateOption()) {
+		case STATE_OPT_NEW:
 			dm.setStartCoordinates(xStart, yStart);
-		}
-		else {
-			//kolla om det finns något på dessa koordinater.
+			break;
+		case STATE_OPT_EDIT:
+			System.out.println("STATE EDIT");
+			int xCheck = xStart;
+			int yCheck = yStart;
+			dm.checkTheCoordinates(xCheck, yCheck);
+			break;
+		default:
+			break;
 		}
 	}
 	public void handleMouseReleased(int xEnd, int yEnd) {
 		System.out.println("handleMouseReleased.");
-		if (dm.getStateOption().equals(STATE_OPT_1)) {
-			drawNewShape(xEnd, yEnd);
+
+		switch (dm.getStateOption()) {
+		case STATE_OPT_NEW:
+			if (dm.getStartCoordinateX() != xEnd && dm.getStartCoordinateY() != yEnd) {
+				drawNewShape(xEnd, yEnd);
+			}
+			break;
+		case STATE_OPT_EDIT:
+			
+			//editOldShape();
+			
+			break;
+		default:
+			break;
 		}
-		else {
-			editOldShape();
-		}	
 	}
 
 	private void editOldShape() {
@@ -92,7 +114,7 @@ public class Controller {
 		int tmp, xStartCurrent, yStartCurrent;
 		
 		switch (dm.getShapeOption()) {
-		case SHAPE_OPT_1: // Cirkel
+		case SHAPE_OPT_CIRCLE: // Cirkel
 			System.out.println("Cirkel");
 			
 			xStartCurrent = dm.getStartCoordinateX();
@@ -100,7 +122,7 @@ public class Controller {
 			
 			if (xEnd > xStartCurrent) {
 				width = xEnd - xStartCurrent;
-			}
+			} 
 			if (xEnd < xStartCurrent) {
 				width = xStartCurrent - xEnd;
 				tmp = xStartCurrent;
@@ -123,7 +145,7 @@ public class Controller {
 			dm.drawCircle();
 			break;
 			
-		case SHAPE_OPT_2: // Fyrkant
+		case SHAPE_OPT_SQUARE: // Fyrkant
 			System.out.println("Fyrkant");
 			
 			xStartCurrent = dm.getStartCoordinateX();
@@ -154,7 +176,7 @@ public class Controller {
 			dm.drawSquare();
 			break;
 			
-		case SHAPE_OPT_3: // Linje
+		case SHAPE_OPT_LINE: // Linje
 			dm.setEndCoordinates(xEnd, yEnd);
 			dm.drawLine();
 			break;

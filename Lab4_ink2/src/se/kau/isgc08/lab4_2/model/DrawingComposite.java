@@ -91,4 +91,12 @@ public interface DrawingComposite extends Serializable {
     * @return the area color
     */
    public Color getAreaColor();
+
+   /*
+    * Gets the coordinates that are to be checked 
+    * 
+    * */
+   
+   public DrawingShape checkCoordinates(int xCheck, int yCheck);
+	
 }
