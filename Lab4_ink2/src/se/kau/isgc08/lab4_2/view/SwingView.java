@@ -22,9 +22,9 @@ import se.kau.isgc08.lab4_2.model.DrawingContainer;
 
 public class SwingView {
 	
-	static final int MIN = 0;
-	static final int MAX = 10;
-	static final int INIT = 0;
+	private static final int MIN = 0;
+	private static final int MAX = 10;
+	private static final int INIT = 0;
 	private Controller con;
 	private ExitListener el;
 	private DrawingUtil drawUtil;
@@ -36,6 +36,7 @@ public class SwingView {
 	private JRadioButton rBtnLine, rBtnCircle, rBtnSquare;
 	private JButton btnColorFill, btnColorOutline, btnDelete;
 	private JSlider slider;
+	private DrawingContainer drawCon;
 	
 	public SwingView (Controller c) {
 		con = c;
@@ -45,6 +46,7 @@ public class SwingView {
 	
 	public void repaintGUI() {
 		System.out.println("repaintGUI");
+		drawPanel.setDc(drawCon);
 		drawPanel.repaint();
 		drawPanel.revalidate();
 	}
@@ -90,7 +92,7 @@ public class SwingView {
 	}
 	
 	public void relayDelete() {
-		
+		con.handleDelete();
 	}
 
 	public void disableEditingOptions() {
@@ -125,6 +127,8 @@ public class SwingView {
 	
 	/* Skapar fönster */
 	public void drawGUI(DrawingContainer dc) {
+		
+		drawCon = dc;
 		
 		// Edit area
 		JPanel editPanel = new JPanel();

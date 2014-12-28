@@ -1,6 +1,8 @@
 package se.kau.isgc08.lab4_2.controler;
 import java.awt.Color;
+
 import se.kau.isgc08.lab4_2.model.DrawingManager;
+import se.kau.isgc08.lab4_2.model.DrawingShape;
 import se.kau.isgc08.lab4_2.view.SwingView;
 
 public class Controller {
@@ -10,6 +12,7 @@ public class Controller {
 	private final static String STATE_OPT_NEW = "NEW", STATE_OPT_EDIT = "EDIT";
 	private final static String SHAPE_OPT_CIRCLE = "CIRCLE", SHAPE_OPT_SQUARE = "SQUARE", SHAPE_OPT_LINE = "LINE";	
 	private int width, height;
+	private DrawingShape currentShape;
 	
 	public Controller() {
 		sv = new SwingView(this);
@@ -77,15 +80,21 @@ public class Controller {
 			dm.setStartCoordinates(xStart, yStart);
 			break;
 		case STATE_OPT_EDIT:
-			System.out.println("STATE EDIT");
 			int xCheck = xStart;
 			int yCheck = yStart;
-			dm.checkTheCoordinates(xCheck, yCheck);
+			
+			dm.setEditCoordinates(xCheck, yCheck);
+			getCurrentShape();
 			break;
 		default:
 			break;
 		}
 	}
+	private void getCurrentShape() {
+		currentShape = dm.checkTheCoordinates();
+		System.out.println("sparad currentShape: " + currentShape);
+	}
+
 	public void handleMouseReleased(int xEnd, int yEnd) {
 		System.out.println("handleMouseReleased.");
 
@@ -104,18 +113,25 @@ public class Controller {
 			break;
 		}
 	}
+	
+	public void handleDelete() {
+		if (currentShape != null) {
+			System.out.println("handleDelete");
+			dm.getContainer().remove(currentShape);
+			sv.repaintGUI();
+		}
+	}
 
 	private void editOldShape() {
 		// TODO // ändra storlek eller ta bort eller nåt.
 	}
 
 	private void drawNewShape(int xEnd, int yEnd) {
-		System.out.println("drawNewShape.");
-		int tmp, xStartCurrent, yStartCurrent;
+		int xStartCurrent, yStartCurrent;
 		
 		switch (dm.getShapeOption()) {
-		case SHAPE_OPT_CIRCLE: // Cirkel
-			System.out.println("Cirkel");
+		case SHAPE_OPT_CIRCLE:
+			System.out.println("Controller: Rita cirkel");
 			
 			xStartCurrent = dm.getStartCoordinateX();
 			yStartCurrent = dm.getStartCoordinateY();
@@ -125,9 +141,9 @@ public class Controller {
 			} 
 			if (xEnd < xStartCurrent) {
 				width = xStartCurrent - xEnd;
-				tmp = xStartCurrent;
+				//tmp = xStartCurrent;
 				xStartCurrent = xEnd;
-				xEnd = tmp;
+				//xEnd = tmp;
 			}
 			if (yEnd > yStartCurrent) {
 				height = yEnd - yStartCurrent;
@@ -135,18 +151,18 @@ public class Controller {
 			}
 			if (yEnd < yStartCurrent) {
 				height = yStartCurrent - yEnd;
-				tmp = yStartCurrent;
+				//tmp = yStartCurrent;
 				yStartCurrent = yEnd;
-				yEnd = tmp;
+				//yEnd = tmp;
 			}
 			dm.setStartCoordinates(xStartCurrent, yStartCurrent);
-			dm.setEndCoordinates(xEnd, yEnd);
+			//dm.setEndCoordinates(xEnd, yEnd);
 			dm.setWidthAndHeight(width, height);
 			dm.drawCircle();
 			break;
 			
-		case SHAPE_OPT_SQUARE: // Fyrkant
-			System.out.println("Fyrkant");
+		case SHAPE_OPT_SQUARE:
+			System.out.println("Controller: Rita fyrkant");
 			
 			xStartCurrent = dm.getStartCoordinateX();
 			yStartCurrent = dm.getStartCoordinateY();
@@ -156,9 +172,9 @@ public class Controller {
 			}
 			if (xEnd < xStartCurrent) {
 				width = xStartCurrent - xEnd;
-				tmp = xStartCurrent;
+				//tmp = xStartCurrent;
 				xStartCurrent = xEnd;
-				xEnd = tmp;
+				//xEnd = tmp;
 			}
 			if (yEnd > yStartCurrent) {
 				height = yEnd - yStartCurrent;
@@ -166,17 +182,18 @@ public class Controller {
 			}
 			if (yEnd < yStartCurrent) {
 				height = yStartCurrent - yEnd;
-				tmp = yStartCurrent;
+				//tmp = yStartCurrent;
 				yStartCurrent = yEnd;
-				yEnd = tmp;
+				//yEnd = tmp;
 			}
 			dm.setStartCoordinates(xStartCurrent, yStartCurrent);
-			dm.setEndCoordinates(xEnd, yEnd);
+			//dm.setEndCoordinates(xEnd, yEnd);
 			dm.setWidthAndHeight(width, height);
 			dm.drawSquare();
 			break;
 			
-		case SHAPE_OPT_LINE: // Linje
+		case SHAPE_OPT_LINE:
+			System.out.println("Controller: Rita linje");
 			dm.setEndCoordinates(xEnd, yEnd);
 			dm.drawLine();
 			break;

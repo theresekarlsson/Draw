@@ -2,14 +2,11 @@ package se.kau.isgc08.lab4_2.model;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
 
 import se.kau.isgc08.lab4_2.view.DrawingUtilInterface;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class DrawingContainer. This class can be used as the Container for your Drawings. 
  * However this is a convenience class provided for your leisure. You can build you're own
@@ -17,14 +14,8 @@ import se.kau.isgc08.lab4_2.view.DrawingUtilInterface;
  */
 public class DrawingContainer implements DrawingComposite, Cloneable {
 	
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
 	private Vector<DrawingComposite> v;
-	
 	
 	/**
 	 * Instantiates a new drawing container. It also instantiates the Vector used for the members the container holds.
@@ -34,8 +25,9 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 	}
 	
 	/**
-	 * Iterates over all members calling their respective draw methods. This structure can easily be duplicated for creating
-	 * other chains. Like identifying a component at at specific location.
+	 * Iterates over all members calling their respective draw methods. 
+	 * This structure can easily be duplicated for creating other chains, 
+	 * like identifying a component at at specific location.
 	 *
 	 * @param g the Graphics object holding screen estate.
 	 */
@@ -50,23 +42,19 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.kau.lab4.model.DrawingComposite#add(se.kau.lab4.model.DrawingComposite)
-	 */
 	public void add(DrawingComposite s) {
 		v.add(s);
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.kau.lab4.model.DrawingComposite#remove(se.kau.lab4.model.DrawingComposite)
-	 */
 	public void remove(DrawingComposite s) {
+		System.out.println(s);
+		System.out.println(v.size());
 		v.remove(s);
+		System.out.println(v.size());
 	}
 	
 	/**
 	 * Gets the container. Will return a reference to a Container, will only return Containers on other members null
-	 *
 	 * @return the container
 	 */
 	public DrawingComposite getContainer() {
@@ -75,7 +63,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 	
 	/**
 	 * Should not be implemented in any specific way for a container.
-	 *
 	 * @return the x1
 	 */
 	public int getX1() {
@@ -85,7 +72,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 
 	/**
 	 * Should not be implemented in any specific way for a container.
-	 *
 	 * @return the width
 	 */
 	public int getWidth() {
@@ -95,7 +81,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 
 	/**
 	 * Should not be implemented in any specific way for a container.
-	 *
 	 * @return the y1
 	 */
 	public int getY1() {
@@ -105,7 +90,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 
 	/**
 	 * Should not be implemented in any specific way for a container.
-	 *
 	 * @return the height
 	 */
 	public int getHeight() {
@@ -115,7 +99,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 
 	/**
 	 * Should not be implemented in any specific way for a container.
-	 *
 	 * @return the line width
 	 */
 	public int getLineWidth() {
@@ -125,7 +108,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 
 	/**
 	 * Should not be implemented in any specific way for a container.
-	 *
 	 * @return the line color
 	 */
 	public Color getLineColor() {
@@ -135,7 +117,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 
 	/**
 	 * Should not be implemented in any specific way for a container.
-	 *
 	 * @return the area color
 	 */
 	public Color getAreaColor() {
@@ -143,9 +124,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.kau.isgc08.lab4.model.DrawingComposite#setDrawingAPI(se.kau.isgc08.lab4.view.DrawingUtilInterface)
-	 */
 	@Override
 	public void setDrawingAPI(DrawingUtilInterface di) {
 		DrawingComposite t;
@@ -158,17 +136,19 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 		
 	}
 	
-	public DrawingShape checkCoordinates(int xCheck, int yCheck) {
+	public DrawingShape checkCoordinatesForShape(int xCheck, int yCheck) {
 		DrawingComposite t;
-		Collections.reverse(v);
+		//Collections.reverse(v);
+		System.out.println(v.size());
 		Enumeration<DrawingComposite> e = v.elements();
-		DrawingShape ds = null;
 		
 		while (e.hasMoreElements()) {
 			t = e.nextElement();
-			ds = t.checkCoordinates(xCheck, yCheck);
+			DrawingShape ds = t.checkCoordinatesForShape(xCheck, yCheck);
+			if (ds != null) {
+				return ds;
+			}
 		}
-		return ds;
+		return null;
 	}
-	
 }
