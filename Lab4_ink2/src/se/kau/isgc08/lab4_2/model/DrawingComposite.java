@@ -95,8 +95,8 @@ public interface DrawingComposite extends Serializable {
    /*
     * Gets the coordinates that are to be checked 
     * 
+    * Return a DrawingShape
     * */
-   
-   public DrawingShape checkCoordinates(int xCheck, int yCheck);
+   public DrawingShape checkCoordinatesForShape(int xCheck, int yCheck);
 	
 }

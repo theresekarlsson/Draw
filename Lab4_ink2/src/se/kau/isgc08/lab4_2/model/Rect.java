@@ -24,13 +24,15 @@ public class Rect extends DrawingShape {
 		setAreaColor(area);
 	}
 	
-	public DrawingShape checkCoordinates(int xCheck, int yCheck) {
-		int x2 = getX1() + getWidth();
-		int y2 = getY1() + getWidth();
-		if ((xCheck > getX1() && xCheck < x2) && (yCheck > getY1() && yCheck < y2)) {
-			System.out.println("Fyrkantens koordinater. x1: " + getX1() + ", x2: " + x2 + ", y1: " + getY1() + ", y2: " + y2 );
-			System.out.println("Fyrkant");
+	public DrawingShape checkCoordinatesForShape(int xCheck, int yCheck) {
+		int x2 = x1 + width;
+		int y2 = y1 + height;
+		if ((xCheck > x1 && xCheck < x2) && (yCheck > y1 && yCheck < y2)) {
+			System.out.println("Här är en fyrkant.");
+			return this;
 		}
-		return this;
+		else {
+			return null;
+		}
 	}
 }

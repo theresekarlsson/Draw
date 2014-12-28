@@ -6,25 +6,32 @@ import javax.swing.JPanel;
 
 import se.kau.isgc08.lab4_2.model.DrawingComposite;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DrawingPanel. This class contains the screen estate used for drawing. In previos version of the 
+ * The Class DrawingPanel. This class contains the screen estate used for drawing. In previous version of the 
  * DrawingAPI this was direct part of the DrawingAPI, but to enable serialization in this version this is
  * moved to a separate class. 
  */
 public class DrawingPanel extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
+	
 	/** The DrawingComposite attribute. This should reference the DrawingComposite we want to draw on the
 	 * screen estate. */
 	private DrawingComposite dc;
 	
+	public DrawingComposite getDc() {
+		return dc;
+	}
+	public void setDc(DrawingComposite dc) {
+		this.dc = dc;
+	}
+	
 	/**
 	 * Instantiates a new drawing panel.
-	 *
 	 * @param dc the DrawingComposite to draw.
 	 */
 	public DrawingPanel (DrawingComposite dc) {
-		this.dc=dc;
+		this.dc = dc;
 	}
 	/**
 	 * Is called everytime the GUI refreshes and calls the DrawingComposites draw method passing the
@@ -37,5 +44,4 @@ public class DrawingPanel extends JPanel {
 		super.paintComponent(g);
 		dc.draw(g);
 	}
-	
 }

@@ -15,7 +15,7 @@ public class DrawingManager {
 	private Color currentColorOutline = null;
 	private Color currentColorFill = null;
 	private DrawingUtil drawUtil;
-	private int startPosX, startPosY, endPosX, endPosY, width, height;
+	private int startPosX, startPosY, endPosX, endPosY, width, height, yCheck, xCheck;
 	
 	public DrawingManager(DrawingUtil drawingUtil) {
 		drawUtil = drawingUtil;
@@ -29,21 +29,18 @@ public class DrawingManager {
 	}
 	
 	public void drawCircle() {
-		System.out.println("Inne i drawCircle ");
 		Circle circle = new Circle(drawUtil, startPosX, startPosY, width, height, lineThickness, currentColorOutline, currentColorFill);
 		drawContainer.add(circle);
 		fh.saveToFile(drawContainer);
 	}
 
 	public void drawSquare() {
-		System.out.println("Inne i drawCircle ");
 		Rect rectangle = new Rect(drawUtil, startPosX, startPosY, width, height, lineThickness, currentColorOutline, currentColorFill);
 		drawContainer.add(rectangle);
 		fh.saveToFile(drawContainer);
 	}
 	
 	public void drawLine() {
-		System.out.println("Inne i drawLine");
 		Line line = new Line(drawUtil, startPosX, startPosY, endPosX, endPosY, lineThickness, currentColorFill);
 		drawContainer.add(line);
 		fh.saveToFile(drawContainer);
@@ -89,19 +86,23 @@ public class DrawingManager {
 	
 	public void setLineThickness(int value) {
 		lineThickness = value;
-		System.out.println("Linjetjocklek: " + lineThickness);
 	}
 	
 	public void setColorFill(Color chosenColorFill) {
 		currentColorFill = chosenColorFill;
-		System.out.println("Fyllnadsfärg: " + currentColorFill.toString());
 	}
 
 	public void setColorOutline(Color chosenColorOutline) {
 		currentColorOutline = chosenColorOutline;
-		System.out.println("Linjefärg: " + currentColorOutline.toString());
 	}
-	public void checkTheCoordinates(int xCheck, int yCheck) {
-		drawContainer.checkCoordinates(xCheck, yCheck);
+	public DrawingShape checkTheCoordinates() {
+		DrawingShape ds = drawContainer.checkCoordinatesForShape(xCheck, yCheck);
+		System.out.println(ds);
+		return ds;
+	}
+
+	public void setEditCoordinates(int x, int y) {
+		xCheck = x;
+		yCheck = y;
 	}
 }
