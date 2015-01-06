@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 public class DeleteListener implements ActionListener {
 
-	SwingView sv;
+	private SwingView sv;
 	
 	public DeleteListener(SwingView swingView) {
 		sv = swingView;

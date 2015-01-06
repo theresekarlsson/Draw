@@ -11,8 +11,11 @@ public class Controller {
 	private DrawingManager dm;
 	private final static String STATE_OPT_NEW = "NEW", STATE_OPT_EDIT = "EDIT";
 	private final static String SHAPE_OPT_CIRCLE = "CIRCLE", SHAPE_OPT_SQUARE = "SQUARE", SHAPE_OPT_LINE = "LINE";	
+	private final static String OBJ_MOVE = "MOVE", OBJ_UP_LEFT = "UPPER_LEFT", 
+			OBJ_LOW_LEFT = "LOWER_LEFT", OBJ_UP_RIGHT ="UPPER_RIGHT", OBJ_LOW_RIGHT ="LOWER_RIGHT";
 	private int width, height;
 	private DrawingShape currentShape;
+	private String corner = OBJ_MOVE;
 	
 	public Controller() {
 		sv = new SwingView(this);
@@ -29,6 +32,7 @@ public class Controller {
 	}
 
 	public void handleExit() {
+		dm.saveContainer();
 		System.exit(0);
 	}
 
@@ -40,12 +44,12 @@ public class Controller {
 		String selectedState = null;
 		switch (selState) {
 		case "Måla ny":
-			sv.enableEditingOptions();
 			selectedState = STATE_OPT_NEW;
+			sv.enableAttributeOptions();
 			break;
 		case "Förändra befintlig":
-			sv.disableEditingOptions();
 			selectedState = STATE_OPT_EDIT;
+			sv.disableAttributeOptions();
 			break;
 		default:
 			break;
@@ -74,43 +78,136 @@ public class Controller {
 		dm.setShapeOption(selectedShape);
 	}
 
-	public void handleMousePressed(int xStart, int yStart) {
+	public void handleMousePressed(int x, int y) {
 		switch (dm.getStateOption()) {
 		case STATE_OPT_NEW:
-			dm.setStartCoordinates(xStart, yStart);
+			dm.setStartCoordinates(x, y);
 			break;
 		case STATE_OPT_EDIT:
-			int xCheck = xStart;
-			int yCheck = yStart;
+			dm.setEditCoordinates(x, y);
+			currentShape = dm.checkTheCoordinates();
 			
-			dm.setEditCoordinates(xCheck, yCheck);
-			getCurrentShape();
+			if (currentShape != null) {
+				int startX, startY, editX, editY, diffX = 0, diffY = 0, height, width, boundary = 10;
+				startX = currentShape.getX1();
+				startY = currentShape.getY1();
+				editX = dm.getEditCoordinateX();
+				editY = dm.getEditCoordinateY();
+				height = currentShape.getHeight();
+				width = currentShape.getWidth();
+				
+				if ((editX >= startX && editX < startX + boundary) &&
+						(editY >= startY && editY < startY + boundary)) {
+					diffX = editX - startX;
+					diffY = editY - startY;
+					corner = OBJ_UP_LEFT;
+				}
+				else if ((editX >= startX && editX < startX + boundary) && 
+						(editY <= (startY + height) && editY > (startY + height) - boundary)) {
+					diffX = editX - startX;
+					diffY = (startY + height) - editY;
+					corner = OBJ_LOW_LEFT;
+				}
+				else if ((editX <= (startX + width) && editX > ((startX + width) - boundary)) &&
+						(editY >= startY && editY < (startY + boundary))) {
+					diffX = (startX + width) - editX;
+					diffY =  editY - startY;
+					corner = OBJ_UP_RIGHT;
+				}
+				else if ((editX <= startX + width) && editX > ((startX + width) - boundary) && (
+						editY <= (startY + height) && editY > ((startY + height) - boundary))) {
+					diffX = (startX + width) - editX;
+					diffY = (startY + height) - editY;
+					corner = OBJ_LOW_RIGHT;
+				}
+				else { // flytta
+					diffX = x - startX;
+					diffY = y - startY;
+					corner = OBJ_MOVE;
+				}
+				dm.setDiffCoordinates(diffX, diffY);
+			}
 			break;
 		default:
 			break;
 		}
 	}
-	private void getCurrentShape() {
-		currentShape = dm.checkTheCoordinates();
-		System.out.println("sparad currentShape: " + currentShape);
+
+	public void handleMouseDragged(int xDown, int yDown) {
+		if (dm.getStateOption().equals(STATE_OPT_EDIT) && currentShape != null) {
+			
+			int startX, startY, diffX, diffY, height, width;
+			startX = currentShape.getX1();
+			startY = currentShape.getY1();
+			height = currentShape.getHeight();
+			width = currentShape.getWidth();
+			diffX = dm.getDiffCoordinateX();
+			diffY = dm.getDiffCoordinateY();
+			
+			switch(corner) {
+			case OBJ_UP_LEFT: 
+				if (xDown < startX && yDown < startY) {
+					currentShape.setX1(startX - 1);
+					currentShape.setY1(startY - 1);
+					currentShape.setHeight(height + 1);
+					currentShape.setWidth(width + 1);
+				}
+				else if (xDown > startX && yDown > startY) {
+					currentShape.setX1(startX + 1);
+					currentShape.setY1(startY + 1);
+					currentShape.setHeight(height - 1);
+					currentShape.setWidth(width - 1);
+				}
+				break;
+			case OBJ_LOW_LEFT:
+				if (xDown < startX && yDown > (startY + height)) {
+					currentShape.setX1(startX - 1);
+					currentShape.setHeight(height + 1);
+					currentShape.setWidth(width + 1);	
+				}
+				else if (xDown > startX && yDown < (startY + height)) {
+					currentShape.setX1(startX + 1);
+					currentShape.setHeight(height - 1);
+					currentShape.setWidth(width - 1);
+				}
+				break;
+			case OBJ_UP_RIGHT:
+				if (xDown > (startX + width) && yDown < startY) {
+					currentShape.setY1(startY - 1);
+					currentShape.setHeight(height + 1);
+					currentShape.setWidth(width + 1);
+				}
+				else if (xDown < (startX + width) && yDown > startY) {
+					currentShape.setY1(startY + 1);
+					currentShape.setHeight(height - 1);
+					currentShape.setWidth(height - 1);
+				}
+				break;
+			case OBJ_LOW_RIGHT:
+				if (xDown > (startX + width) && yDown > (startY + height)) {
+					currentShape.setHeight(height + 1);
+					currentShape.setWidth(width + 1);	
+				}	
+				else if (xDown < (startX + width) && yDown < (startY + height)) {
+					currentShape.setHeight(height - 1);
+					currentShape.setWidth(width - 1);
+				}
+				break;
+			case OBJ_MOVE:
+				currentShape.setX1(xDown - diffX);
+				currentShape.setY1(yDown - diffY);
+				break;
+			}
+		sv.repaintGUI();
+		}
 	}
-
+	
 	public void handleMouseReleased(int xEnd, int yEnd) {
-		System.out.println("handleMouseReleased.");
-
-		switch (dm.getStateOption()) {
-		case STATE_OPT_NEW:
-			if (dm.getStartCoordinateX() != xEnd && dm.getStartCoordinateY() != yEnd) {
+		if (dm.getStateOption().equals(STATE_OPT_NEW)) {
+			if ((dm.getStartCoordinateX() != xEnd && dm.getStartCoordinateY() != yEnd) && 
+					(dm.getColorFill() != null || dm.getColorOutline() != null)) {
 				drawNewShape(xEnd, yEnd);
 			}
-			break;
-		case STATE_OPT_EDIT:
-			
-			//editOldShape();
-			
-			break;
-		default:
-			break;
 		}
 	}
 	
@@ -120,10 +217,6 @@ public class Controller {
 			dm.getContainer().remove(currentShape);
 			sv.repaintGUI();
 		}
-	}
-
-	private void editOldShape() {
-		// TODO // ändra storlek eller ta bort eller nåt.
 	}
 
 	private void drawNewShape(int xEnd, int yEnd) {
@@ -141,9 +234,7 @@ public class Controller {
 			} 
 			if (xEnd < xStartCurrent) {
 				width = xStartCurrent - xEnd;
-				//tmp = xStartCurrent;
 				xStartCurrent = xEnd;
-				//xEnd = tmp;
 			}
 			if (yEnd > yStartCurrent) {
 				height = yEnd - yStartCurrent;
@@ -151,12 +242,10 @@ public class Controller {
 			}
 			if (yEnd < yStartCurrent) {
 				height = yStartCurrent - yEnd;
-				//tmp = yStartCurrent;
 				yStartCurrent = yEnd;
-				//yEnd = tmp;
 			}
 			dm.setStartCoordinates(xStartCurrent, yStartCurrent);
-			//dm.setEndCoordinates(xEnd, yEnd);
+			dm.setEndCoordinates(xEnd, yEnd);
 			dm.setWidthAndHeight(width, height);
 			dm.drawCircle();
 			break;
@@ -172,9 +261,7 @@ public class Controller {
 			}
 			if (xEnd < xStartCurrent) {
 				width = xStartCurrent - xEnd;
-				//tmp = xStartCurrent;
 				xStartCurrent = xEnd;
-				//xEnd = tmp;
 			}
 			if (yEnd > yStartCurrent) {
 				height = yEnd - yStartCurrent;
@@ -182,20 +269,21 @@ public class Controller {
 			}
 			if (yEnd < yStartCurrent) {
 				height = yStartCurrent - yEnd;
-				//tmp = yStartCurrent;
 				yStartCurrent = yEnd;
-				//yEnd = tmp;
 			}
 			dm.setStartCoordinates(xStartCurrent, yStartCurrent);
-			//dm.setEndCoordinates(xEnd, yEnd);
+			dm.setEndCoordinates(xEnd, yEnd);
 			dm.setWidthAndHeight(width, height);
 			dm.drawSquare();
 			break;
 			
 		case SHAPE_OPT_LINE:
-			System.out.println("Controller: Rita linje");
-			dm.setEndCoordinates(xEnd, yEnd);
-			dm.drawLine();
+			//TODO Något blir fel med koordinaterna!
+			if (dm.getLineThickness() >= 1) {
+				System.out.println("Controller: Rita linje");
+				dm.setEndCoordinates(xEnd, yEnd);
+				dm.drawLine();
+			}
 			break;
 			
 		default:

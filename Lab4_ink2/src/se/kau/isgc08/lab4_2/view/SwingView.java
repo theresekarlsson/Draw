@@ -22,11 +22,10 @@ import se.kau.isgc08.lab4_2.model.DrawingContainer;
 
 public class SwingView {
 	
-	private static final int MIN = 0;
-	private static final int MAX = 10;
-	private static final int INIT = 0;
+	private static final int MIN = 0, MAX = 10, INIT = 0;
 	private Controller con;
-	private ExitListener el;
+	private ExitListener exitListener;
+	private DrawingPanelListener drawPanelListener;
 	private DrawingUtil drawUtil;
 	private JColorChooser colorChooser;
 	private JLabel lblColorFill, lblColorOutline, lblThickness;
@@ -41,11 +40,11 @@ public class SwingView {
 	public SwingView (Controller c) {
 		con = c;
 		drawUtil = new DrawingUtil();
-		el = new ExitListener(this);
+		exitListener = new ExitListener(this);
+		drawPanelListener = new DrawingPanelListener(this);
 	}
-	
+
 	public void repaintGUI() {
-		System.out.println("repaintGUI");
 		drawPanel.setDc(drawCon);
 		drawPanel.repaint();
 		drawPanel.revalidate();
@@ -54,48 +53,52 @@ public class SwingView {
 	public DrawingUtil getDrawUtil() {
 		return drawUtil;
 	}
-	// Skickar vidare vald fyllnadsfärg.
+
 	public void relayColorFill() {
 		Color chosenColorFill = JColorChooser.showDialog(colorChooser, "Välj fyllnadsfärg", null); 
 		lblColorFill.setBackground(chosenColorFill);
 		con.handleColorFill(chosenColorFill);
 	}
-	// Skickar vidare vald linjefärg.
+
 	public void relayColorOutline() {
 		Color chosenColorOutline = JColorChooser.showDialog(colorChooser, "Välj kantfärg", null); 
 		lblColorOutline.setBackground(chosenColorOutline);
 		con.handleColorOutline(chosenColorOutline);
 	}
-	// Skickar vidare vald state.
+
 	public void relayStateOption(String selectedState) {
 		con.handleStateOption(selectedState);
 	}
-	// Skickar vidare vald form.
+
 	public void relayShapeOption(String selectedShape) {
 		con.handleShapeOption(selectedShape);
 	}
-	// Skickar vidare vald linjetjocklek.
+
 	public void relaySlider(int value) {
 		con.handleSlider(value);
 	}
-	
+
 	public void relayExit() {
 		con.handleExit();
 	}
 
-	public void relayMousePressed(int xStart, int yStart) {
-		con.handleMousePressed(xStart, yStart);
+	public void relayMousePressed(int x, int y) {
+		con.handleMousePressed(x, y);
 	}
 
 	public void relayMouseReleased(int xEnd, int yEnd) {
 		con.handleMouseReleased(xEnd, yEnd);
+	}
+
+	public void relayMouseDragged(int xDown, int yDown) {
+		con.handleMouseDragged(xDown, yDown);
 	}
 	
 	public void relayDelete() {
 		con.handleDelete();
 	}
 
-	public void disableEditingOptions() {
+	public void disableAttributeOptions() {
 		rBtnCircle.setEnabled(false);
 		rBtnSquare.setEnabled(false);
 		rBtnLine.setEnabled(false);
@@ -106,7 +109,7 @@ public class SwingView {
 		btnDelete.setEnabled(true);
 	}
 
-	public void enableEditingOptions() {
+	public void enableAttributeOptions() {
 		rBtnCircle.setEnabled(true);
 		rBtnSquare.setEnabled(true);
 		rBtnLine.setEnabled(true);
@@ -202,7 +205,7 @@ public class SwingView {
 		slider.setMinorTickSpacing(1);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
-		slider.addChangeListener(new SlideListener(this, slider));
+		slider.addChangeListener(new SliderListener(this, slider));
 		
 		editPanel.add(Box.createVerticalStrut(25));
 		editPanel.add(lblThickness);
@@ -214,7 +217,7 @@ public class SwingView {
 		
 		// Close button
 		JButton btnClose = new JButton("Avsluta");
-		btnClose.addActionListener(el);
+		btnClose.addActionListener(exitListener);
 		
 		editPanel.add(Box.createVerticalStrut(25));
 		editPanel.add(btnDelete);
@@ -227,7 +230,8 @@ public class SwingView {
 		drawPanel = new DrawingPanel(dc);
 		drawPanel.setBackground(Color.WHITE);
 		drawPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		drawPanel.addMouseListener(new DrawingPanelListener(this));
+		drawPanel.addMouseListener(drawPanelListener);
+		drawPanel.addMouseMotionListener(drawPanelListener);
 		
 		// Window
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -236,7 +240,7 @@ public class SwingView {
         int newWidth = screenSize.width;
 		frame = new JFrame("Draw");
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frame.addWindowListener(el);
+		frame.addWindowListener(exitListener);
 		frame.setSize(newWidth, newHeight);
 		frame.setVisible(true);
 		
