@@ -1,28 +1,31 @@
 package se.kau.isgc08.lab4_2.view;
-
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import javax.swing.event.MouseInputAdapter;
 
-public class DrawingPanelListener implements MouseListener {
+public class DrawingPanelListener extends MouseInputAdapter {
 
-	SwingView sv;
+	private SwingView sv;
 	
 	public DrawingPanelListener(SwingView swingView) {
 		sv = swingView;
 	}
 
 	public void mousePressed(MouseEvent e) {
-		int xStart, yStart; 
-		xStart = e.getX();     
-		yStart = e.getY();
-		sv.relayMousePressed(xStart, yStart);
+		int x = e.getX();     
+		int y = e.getY();
+		sv.relayMousePressed(x, y);
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		int xEnd, yEnd;
-		xEnd = e.getX();
-		yEnd = e.getY();
-		sv.relayMouseReleased(xEnd, yEnd);
+		int x = e.getX();
+		int y = e.getY();
+		sv.relayMouseReleased(x, y);
+	}
+	
+	public void mouseDragged(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+		sv.relayMouseDragged(x, y);
 	}
 	
 	public void mouseClicked(MouseEvent arg0) {
@@ -34,6 +37,10 @@ public class DrawingPanelListener implements MouseListener {
 	}
 
 	public void mouseExited(MouseEvent arg0) {
+
+	}
+
+	public void mouseMoved(MouseEvent arg0) {
 
 	}
 }

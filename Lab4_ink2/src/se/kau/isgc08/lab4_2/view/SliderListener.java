@@ -4,12 +4,12 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class SlideListener implements ChangeListener {
+public class SliderListener implements ChangeListener {
 
-	SwingView sv;
-	JSlider source;
+	private SwingView sv;
+	private JSlider source;
 	
-	public SlideListener(SwingView swingView, JSlider slide) {
+	public SliderListener(SwingView swingView, JSlider slide) {
 		sv = swingView;
 		source = slide;
 	}
@@ -19,9 +19,7 @@ public class SlideListener implements ChangeListener {
 		
 		if (!source.getValueIsAdjusting()) {
 	        int value = (int)source.getValue();
-	        
 	        sv.relaySlider(value);
 	    }
 	}
-
 }

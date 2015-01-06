@@ -138,7 +138,6 @@ public class DrawingContainer implements DrawingComposite, Cloneable {
 	
 	public DrawingShape checkCoordinatesForShape(int xCheck, int yCheck) {
 		DrawingComposite t;
-		//Collections.reverse(v);
 		System.out.println(v.size());
 		Enumeration<DrawingComposite> e = v.elements();
 		
