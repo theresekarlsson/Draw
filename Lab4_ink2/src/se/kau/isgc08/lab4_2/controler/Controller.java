@@ -194,8 +194,16 @@ public class Controller {
 				}
 				break;
 			case OBJ_MOVE:
+				
+				
 				currentShape.setX1(xDown - diffX);
 				currentShape.setY1(yDown - diffY);
+				
+				if (currentShape.toString().contains("Line")) {
+					// TODO 
+					currentShape.setWidth(currentShape.getX1() + width);
+					currentShape.setHeight(currentShape.getY1() + height);
+				}
 				break;
 			}
 		sv.repaintGUI();
