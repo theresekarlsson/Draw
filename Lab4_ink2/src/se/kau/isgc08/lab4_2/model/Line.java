@@ -24,10 +24,10 @@ public class Line extends DrawingShape {
 		setAreaColor(Color.BLACK);
 	}
 	
+	// TODO Nåt knas här!!
 	public DrawingShape checkCoordinatesForShape(int xCheck, int yCheck) {
-		int x2 = x1 + width;
-		int y2 = y1 + height;
-		if ((xCheck > x1 && xCheck < x2) && (yCheck > y1 && yCheck < y2)) {
+		
+		if ((xCheck > x1 && xCheck < width) && (yCheck > y1 && yCheck < height)) {
 			System.out.println("Här är en linje");
 			return this;
 		}
