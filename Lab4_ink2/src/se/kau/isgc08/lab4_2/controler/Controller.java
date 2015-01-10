@@ -143,7 +143,7 @@ public class Controller {
 			width = currentShape.getWidth();
 			diffX = dm.getDiffCoordinateX();
 			diffY = dm.getDiffCoordinateY();
-			
+		
 			switch(corner) {
 			case OBJ_UP_LEFT: 
 				if (xDown < startX && yDown < startY) {
@@ -194,22 +194,18 @@ public class Controller {
 				}
 				break;
 			case OBJ_MOVE:
-				
-				
 				currentShape.setX1(xDown - diffX);
 				currentShape.setY1(yDown - diffY);
 				
 				if (currentShape.toString().contains("Line")) {
-					// TODO 
-					currentShape.setWidth(currentShape.getX1() + width);
-					currentShape.setHeight(currentShape.getY1() + height);
+					currentShape.setWidth(xDown - (diffX - currentShape.getX1()));
+					currentShape.setHeight(yDown - (diffY - currentShape.getY1()));
 				}
 				break;
 			}
-		sv.repaintGUI();
+			sv.repaintGUI();
 		}
 	}
-	
 	public void handleMouseReleased(int xEnd, int yEnd) {
 		if (dm.getStateOption().equals(STATE_OPT_NEW)) {
 			if ((dm.getStartCoordinateX() != xEnd && dm.getStartCoordinateY() != yEnd) && 
@@ -286,7 +282,6 @@ public class Controller {
 			break;
 			
 		case SHAPE_OPT_LINE:
-			//TODO Något blir fel med koordinaterna!
 			if (dm.getLineThickness() >= 1) {
 				System.out.println("Controller: Rita linje");
 				dm.setEndCoordinates(xEnd, yEnd);

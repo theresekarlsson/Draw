@@ -13,21 +13,25 @@ public class Line extends DrawingShape {
 		di.drawLine(this, g);
 	}
 	
-	public Line(DrawingUtilInterface di, int x1, int y1, int x2, int y2, int width, Color color) {
+	public Line(DrawingUtilInterface di, int start_x, int start_y, int end_x, int end_y, int line_thickness, Color color) {
 		super(di);
-		setX1(x1);
-		setWidth(x2);
-		setY1(y1);
-		setHeight(y2);
-		setLineWidth(width);
+		setX1(start_x);
+		setY1(start_y);
+		setWidth(end_x);
+		setHeight(end_y);
+		setLineWidth(line_thickness);
 		setLineColor(color);
 		setAreaColor(Color.BLACK);
 	}
 	
-	// TODO Nåt knas här!!
+	// TODO Inte bra nu, rektangelform.
 	public DrawingShape checkCoordinatesForShape(int xCheck, int yCheck) {
 		
-		if ((xCheck > x1 && xCheck < width) && (yCheck > y1 && yCheck < height)) {
+		if (((xCheck > x1 && xCheck < width) && (yCheck > y1 && yCheck < height)) || 
+				((xCheck < x1 && xCheck > width) && (yCheck > y1 && yCheck < height)) || 
+				((xCheck < x1 && xCheck > width) && (yCheck < y1 && yCheck > height)) ||
+				((xCheck > x1 && xCheck < width) && (yCheck < y1 && yCheck > height))) {
+			
 			System.out.println("Här är en linje");
 			return this;
 		}
